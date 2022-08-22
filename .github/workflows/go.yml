@@ -26,15 +26,19 @@ jobs:
       
     - name: Run Docker Test
       run: make dockertest
-
-    - name: Push user to Docker Hub
-      uses: docker/build-push-action@v5
-      with:
-          #push: false
-          path: go/src/github.com/microservices-demo/user
-          dockerfile: go/src/github.com/microservices-demo/user/docker/user/Dockerfile-release
-          repository: weaveworksdemos/user
-          tags: latest
+      
     - name: Login to DockerHub
       run: |
           echo "${{ secrets.DOCKERHUB_PASS }}" | docker login -u "venupj" --password-stdin
+
+    - name: Push user to Docker Hub
+      uses: mr-smithers-excellent/docker-build-push@v5
+      if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master'
+      with:
+          path: go/src/github.com/microservices-demo/user
+          dockerfile: go/src/github.com/microservices-demo/user/docker/user/Dockerfile-release
+          repository: weaveworksdemos/user
+          registry: docker.io
+          image: venupj/user
+          tags: latest
+    
