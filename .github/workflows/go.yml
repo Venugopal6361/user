@@ -37,7 +37,6 @@ jobs:
       with:
           path: go/src/github.com/microservices-demo/user
           dockerfile: go/src/github.com/microservices-demo/user/docker/user/Dockerfile-release
-          repository: weaveworksdemos/user
           registry: docker.io
           image: venupj/user
           tags: latest
