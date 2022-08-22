@@ -9,13 +9,32 @@ on:
 jobs:
 
   build:
+    defaults:
+      run:
+        working-directory: go/src/github.com/microservices-demo/user
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-
+      with:
+          fetch-depth: 1
+          path: go/src/github.com/microservices-demo/user
+          
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
         go-version: 1.18
+      
+    - name: Run Docker Test
+      run: make dockertest
 
-    
+    - name: Push user to Docker Hub
+      uses: docker/build-push-action@v5
+      with:
+          #push: false
+          path: go/src/github.com/microservices-demo/user
+          dockerfile: go/src/github.com/microservices-demo/user/docker/user/Dockerfile-release
+          repository: weaveworksdemos/user
+          tags: latest
+    - name: Login to DockerHub
+      run: |
+          echo "${{ secrets.DOCKERHUB_PASS }}" | docker login -u "venupj" --password-stdin
