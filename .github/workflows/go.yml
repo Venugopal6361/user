@@ -24,8 +24,8 @@ jobs:
       with:
         go-version: 1.18
       
-    - name: Run Docker Test
-      run: make dockertest
+   # - name: Run Docker Test
+    #  run: make dockertest
       
     - name: Login to DockerHub
       run: |
